@@ -16,7 +16,7 @@ region_name=S3_REGION
 )
 
 def upload(file_path:str,
-           file_name:str,
+           file_name:str=None,
            bucket_name:str=BUCKET_NAME):
     
     if file_path is not None and file_name is None:
@@ -32,7 +32,7 @@ def upload(file_path:str,
         return 0
 
 def download(file_name:str,
-           file_path:str,
+           file_path:str=None,
            bucket_name:str=BUCKET_NAME):
     
     if file_name is not None and file_path is None:
@@ -48,10 +48,3 @@ def download(file_name:str,
         return 1
     except:
         return 0
-
-
-# return s3, BUCKET_NAME
-
-if __name__=="__main__":
-
-    pass
