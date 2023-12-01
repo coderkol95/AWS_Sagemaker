@@ -33,10 +33,15 @@ def put_files_to_s3(s3,
 def handler(event, context):
 
     s3 = boto3.client("s3")
+    print("started")
     X=get_files_from_s3(s3)
+    print("X received")
     s,X_trans=transform_data(X)
+    print("transformed")
     save_files_locally(X_trans,s)
-    put_files_to_s3(s3,"X_trans.csv","scaler.pkl")    
+    print("Saved locally")
+    put_files_to_s3(s3,"X_trans.csv","scaler.pkl")  
+    print("Written out to s3")  
 
 
     
