@@ -13,7 +13,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        token: ${{ secrets.AWS_SAGEMAKER_REPO_WORKFLOW_ACCESS }}
+        token: ${{ secrets.PAT }}
         repository: 'coderkol95/AWS_Sagemaker'
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
