@@ -3,12 +3,14 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import pickle
 import sys
+import logging
+logger = logging.getLogger()
 
 BUCKET_NAME="dataforml"
 
 def get_files_from_s3(s3,bucket_name=BUCKET_NAME):
 
-    s3.download(bucket_name,"raw/X.csv","X.csv")
+    s3.download_file(bucket_name,"raw/X.csv","X.csv")
     X = pd.read_csv("X.csv")
     return X
 
@@ -28,21 +30,21 @@ def put_files_to_s3(s3,
                     data_pipe_loc,
                     bucket_name=BUCKET_NAME):
     
-    s3.upload(X_loc,bucket_name,"preprocessed/X.csv")
-    s3.upload(data_pipe_loc,bucket_name,"artifacts/scaler.pkl")
+    s3.upload_file(X_loc,bucket_name,"preprocessed/X.csv")
+    s3.upload_file(data_pipe_loc,bucket_name,"artifacts/scaler.pkl")
 
 def handler(event, context):
 
     s3 = boto3.client("s3")
-    print("started")
+    logger.info("started")
     X=get_files_from_s3(s3)
-    print("X received")
+    logger.info("X received")
     s,X_trans=transform_data(X)
-    print("transformed")
+    logger.info("transformed")
     save_files_locally(X_trans,s)
-    print("Saved locally")
+    logger.info("Saved locally")
     put_files_to_s3(s3,"X_trans.csv","scaler.pkl")  
-    print("Written out to s3")  
+    logger.info("Written out to s3")  
 
 
     
