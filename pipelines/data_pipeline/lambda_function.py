@@ -5,8 +5,15 @@ import pickle
 import sys
 import logging
 logger = logging.getLogger()
- 
+from datetime import datetime
+import re
+
 BUCKET_NAME="dataforml"
+
+def get_time_identifier():
+
+    dt=str(datetime.now())[:16]
+    return re.sub("[^0-9]","_",dt)
 
 def get_files_from_s3(s3,bucket_name=BUCKET_NAME):
 
@@ -30,8 +37,8 @@ def put_files_to_s3(s3,
                     data_pipe_loc,
                     bucket_name=BUCKET_NAME):
     
-    s3.upload_file(X_loc,bucket_name,"preprocessed/X.csv")
-    s3.upload_file(data_pipe_loc,bucket_name,"artifacts/scaler.pkl")
+    s3.upload_file(X_loc,bucket_name,f"preprocessed/X_{get_time_identifier()}.csv")
+    s3.upload_file(data_pipe_loc,bucket_name,f"artifacts/scaler_{get_time_identifier()}.pkl")
 
 def handler(event, context):
 

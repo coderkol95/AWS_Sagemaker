@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-        - docker_files/data_pipeline/*
+        - pipelines/data_pipeline/*
 jobs:
   build-and-push:
     name: Build and Push to ECR
