@@ -5,7 +5,7 @@ import pickle
 import sys
 import logging
 logger = logging.getLogger()
-
+ 
 BUCKET_NAME="dataforml"
 
 def get_files_from_s3(s3,bucket_name=BUCKET_NAME):
