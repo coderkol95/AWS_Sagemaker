@@ -2,6 +2,7 @@ import boto3
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 import pickle
+import sys
 
 BUCKET_NAME="dataforml"
 
