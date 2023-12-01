@@ -16,7 +16,9 @@
 
 The pipelines are decoupled. This decoupling controls changes in one pipeline from affecting other pipelines.
 
-## Data pipeline
+## Data
+
+`Trigger: File upload in S3 bucket in raw/` 
 
 * Fetches new data from different sources and keeps raw data in `S3`
 * There is some data preparation code which runs. This code is executed via `AWS Lambda`
@@ -25,10 +27,14 @@ The pipelines are decoupled. This decoupling controls changes in one pipeline fr
 
 ## Training
 
+`Trigger: File upload in S3 bucket in processing/`
+
 * Training is done through containers in Sagemaker using Optuna?
 * Experiments are tracked in Sagemaker
 
 ## Deployment
+
+`Trigger: `
 
 * Model selection, approval and registration
 * Endpoint creation
@@ -36,10 +42,15 @@ The pipelines are decoupled. This decoupling controls changes in one pipeline fr
 
 ## Monitoring
 
+`Trigger: Biweekly cron jobs`
+
 * Data and concept drift implementation
+
+# Additional ideas
+
 * Pipeline monitoring
 * Pipelines' testing
-* Merge rules, UAT, regression testing, SIT
+* Merge rules, UAT, regression testing, SIT and code coverage
 * Event based triggers
 * Underlying infrastructure monitoring
 * Log analytics
