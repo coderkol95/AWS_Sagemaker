@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
     paths:
-        - pipelines/model_pipeline/*
+        - pipelines/model_pipeline/code/*
 jobs:
   build-and-push:
     name: Build and Push to ECR

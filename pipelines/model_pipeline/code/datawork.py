@@ -14,7 +14,7 @@ class data_module(pl.LightningDataModule):
         self.folder=folder
         self.batch_size=batch_size
         self.seed=seed
-  
+
     def setup(self, stage=None):
 
         self.X=np.loadtxt(os.path.join(self.folder,"X.csv"), dtype=np.float32, delimiter=',')
