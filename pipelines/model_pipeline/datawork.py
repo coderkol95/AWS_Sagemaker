@@ -14,6 +14,7 @@ class data_module(pl.LightningDataModule):
     def setup(self,stage=None):
         if stage=='fit':
             X=np.loadtxt("X_preprocessed.csv", dtype=np.float32, delimiter=',')
+            X=np.delete(X,0,1) # Deleting the first column as it was saved as a pd DataFrame
             y=np.loadtxt("y.csv", dtype=np.float32, delimiter=',')
             indices=np.arange(X.shape[0])
             train_indices=np.random.choice(indices,int(0.8*X.shape[0]))

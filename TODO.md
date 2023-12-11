@@ -14,14 +14,14 @@
 - [ ] Split data into train and test
 
 ## Training
-- [ ] Training pipeline execution with different hyperparameter selection
+- [ ] Training pipeline execution with Optuna
 - [ ] Downloading training and test data from different folders directly from S3
 - [ ] Generating different runs with Optuna?
 - [ ] Define seed and deterministic operation
 - [ ] Experiment results tracking and model results visualization
+- [ ] Saving experiment results to S3
 - [ ] Best model selection and approval
 - [ ] Transfer of model to higher environments
-
 
 # Pipelines:
 
