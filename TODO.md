@@ -1,16 +1,27 @@
 # Following tasks are to be done:
 
+## Setup
 - [X] Access AWS client services
-- [X] Access a bucket contents
+- [X] Access bucket contents
 - [X] Uploading and downloading files
+
+## Data pipeline
 - [X] Fetching the latest code for data preparation - Container gets automatically updated
 - [X] Automatic data preparation whenever new data is uploaded - Triggered via Lambda function
 - [X] Upload prepped tensor datasets to S3 - Text data is being uploaded
+- [ ] Check if Lambda function image URI can be automatically updated when the ECR image is updated
+- [ ] Run Lambda using its URL when the ECR image is run
+- [ ] Split data into train and test
+
+## Training
 - [ ] Training pipeline execution with different hyperparameter selection
+- [ ] Downloading training and test data from different folders directly from S3
+- [ ] Generating different runs with Optuna?
+- [ ] Define seed and deterministic operation
 - [ ] Experiment results tracking and model results visualization
 - [ ] Best model selection and approval
 - [ ] Transfer of model to higher environments
-- [ ] Check if Lambda function image URI can be automatically updated when the ECR image is updated
+
 
 # Pipelines:
 
@@ -18,7 +29,7 @@ The pipelines are decoupled. This decoupling controls changes in one pipeline fr
 
 ## Data
 
-`Trigger: File upload in S3 bucket in raw/` 
+`Trigger: File upload in S3 bucket in raw/` -> Detected by `AWS Lambda` 
 
 * Fetches new data from different sources and keeps raw data in `S3`
 * There is some data preparation code which runs. This code is executed via `AWS Lambda`
@@ -28,14 +39,14 @@ The pipelines are decoupled. This decoupling controls changes in one pipeline fr
 
 ## Training
 
-`Trigger: File upload in S3 bucket in processing/`  -  Not implemented this trigger now.
+`Trigger: File upload in S3 bucket in processing/`  -  Not implemented currently.
 
 * Training is done through containers in Sagemaker using Optuna?
 * Experiments are tracked in Sagemaker
 
 ## Deployment
 
-`Trigger: `
+`Trigger:`  -   Not implemented currently.
 
 * Model selection, approval and registration
 * Endpoint creation
