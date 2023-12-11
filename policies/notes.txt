@@ -1,0 +1,1 @@
+Added AmazonS3FullAccess permission to SagemakerLocalAccess Policy during training jobs for getting files from dataforml/preprocessed/
