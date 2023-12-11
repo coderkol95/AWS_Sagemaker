@@ -20,7 +20,8 @@
                 "ecr:PutImage",
                 "ecr:UploadLayerPart"
             ],
-            "Resource": "arn:aws:ecr:us-east-1:879444378775:repository/data-pipeline"
+            "Resource": ["arn:aws:ecr:us-east-1:879444378775:repository/data-pipeline",
+            "arn:aws:ecr:us-east-1:879444378775:repository/data-pipeline"]
         }
     ]
 }

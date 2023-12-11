@@ -9,7 +9,7 @@ RANDOM_SEED=42
 
 class data_module(pl.LightningDataModule):
 
-    def __init__(self, folder="opt/ml/input/data/training/", batch_size=BATCH_SIZE, seed=RANDOM_SEED):
+    def __init__(self, folder="opt/ml/input/data/train/", batch_size=BATCH_SIZE, seed=RANDOM_SEED):
         super(data_module,self).__init__()
         self.folder=folder
         self.batch_size=batch_size

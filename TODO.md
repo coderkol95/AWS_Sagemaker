@@ -14,13 +14,13 @@
 - [ ] Split data into train and test
 
 ## Training
-- [X] Training pipeline execution with Optuna
+- [X] Training pipeline execution with Optuna hyperparameter tuning
 - [X] Consistent data generation in data module
 - [X] Deterministic run of each trial for ensuring reproducibility - this prevents saving a lot of models and spiking up the S3 cost
-- [ ] Downloading training and test data from different folders directly from S3
+- [ ] Downloading data into training module directly from S3
 - [ ] Experiment results tracking and model results visualization
 - [ ] Saving experiment results to S3
-- [ ] Generating different runs with Optuna?
+- [ ] Generating different Optuna hyperparameter runs as experiment runs?
 
 ## Post training activities: Deployment and further
 - [ ] Performance review among models
