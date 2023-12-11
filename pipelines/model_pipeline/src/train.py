@@ -1,4 +1,4 @@
-import pytorch_lightning as pl
+import lightning.pytorch as pl
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -13,23 +13,14 @@ from typing import List
 # Pytorch 2 has problem with last linear layer having 1 cell in arm arch. Hence reverted to prev version
 # Optuna does not work with pytorch lightning >=2.0, using 1.8
 EPOCHS=3
+RANDOM_SEED=42
 
 # Important path for sagemaker
-prefix = '/' # opt/ml/
+prefix = 'opt/ml/'
 
-# input_path = os.path.join(prefix, 'input/')
-# output_path = os.path.join(prefix, 'output/')
-# model_path = os.path.join(prefix, 'model/')
-
-# if not os.path.exists(output_path):
-#     os.makedirs(output_path)
-
-# if not os.path.exists(model_path):
-#     os.makedirs(model_path)
-
-# Defining training channel
-# channel_name = 'training'
-# training_path = os.path.join(input_path, channel_name)
+input_path = os.path.join(prefix, 'input/data/training')
+output_path = os.path.join(prefix, 'output/lightning_logs')
+model_path = os.path.join(prefix, 'model')
 
 class NN(pl.LightningModule):
 
@@ -96,16 +87,18 @@ def objective(trial):
         trial.suggest_int(f"n_units_l{i}", 4, 128, log=True) for i in range(n_layers)
     ]
 
+    pl.seed_everything(RANDOM_SEED, workers=True) # Setting seed for execution
     model = NN(dropout, output_dims,lr)
     data=data_module()
 
     trainer = pl.Trainer(
         logger=True,
+        deterministic=True,
         # limit_val_batches=PERCENT_VALID_EXAMPLES,
         enable_checkpointing=False,
         max_epochs=EPOCHS,
         # callbacks=[PyTorchLightningPruningCallback(trial, monitor="val_loss")],
-        # default_root_dir=output_path
+        default_root_dir=output_path
     )
     hyperparameters = dict(n_layers=n_layers, dropout=dropout, output_dims=output_dims, lr=lr)
     trainer.logger.log_hyperparams(hyperparameters)
@@ -126,14 +119,11 @@ if __name__ =='__main__':
     print("Best trial:")
     trial = study.best_trial
 
-    print(f"  Value: {trial.value}")
+    print(f"  Validation loss: {trial.value}")
 
-    print("  Params: ")
+    print("  Best model's parameters: ")
     for key, value in trial.params.items():
         print(f"    {key}: {value}")
 
-    # Only running experiments in this docker container.
-    # Also need to save the hyperparams and loss metrics per epoch in this run
-
-    # sys.exit(0)
- 
+# Not saving every model. It will take up a lot of space, resulting in a lot of unnecessary cost. 
+# Instead enforcing seed and deterministic run of Trainer 

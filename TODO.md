@@ -14,14 +14,19 @@
 - [ ] Split data into train and test
 
 ## Training
-- [ ] Training pipeline execution with Optuna
+- [X] Training pipeline execution with Optuna
+- [X] Consistent data generation in data module
+- [X] Deterministic run of each trial for ensuring reproducibility - this prevents saving a lot of models and spiking up the S3 cost
 - [ ] Downloading training and test data from different folders directly from S3
-- [ ] Generating different runs with Optuna?
-- [ ] Define seed and deterministic operation
 - [ ] Experiment results tracking and model results visualization
 - [ ] Saving experiment results to S3
+- [ ] Generating different runs with Optuna?
+
+## Post training activities: Deployment and further
+- [ ] Performance review among models
 - [ ] Best model selection and approval
 - [ ] Transfer of model to higher environments
+- [ ] Model fairness evaluation
 
 # Pipelines:
 
