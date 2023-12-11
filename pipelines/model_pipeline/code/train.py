@@ -9,6 +9,7 @@ import os
 import optuna
 # from optuna.integration import PyTorchLightningPruningCallback # This is causing a lot of problems between packages lightning and pytorch-lightning. Removing it for now
 from typing import List
+import json
 
 # Pytorch 2 has problem with last linear layer having 1 cell in arm arch. Hence reverted to prev version
 # Optuna does not work with pytorch lightning >=2.0, using 1.8
@@ -21,6 +22,7 @@ prefix = 'opt/ml/'
 input_path = os.path.join(prefix, 'input/data/training')
 output_path = os.path.join(prefix, 'output/lightning_logs')
 model_path = os.path.join(prefix, 'model')
+hyperparam_path = os.path.join(prefix, 'input/config/hyperparameters.json')
 
 class NN(pl.LightningModule):
 
@@ -108,8 +110,14 @@ def objective(trial):
 
 if __name__ =='__main__':
 
-    # hyperparameters sent by the client are passed as command-line arguments to the script.
-    epochs=2
+    try:
+        # Hyperparameters received when run as Sagemaker image
+        hyperparams = json.load(open(hyperparam_path))        
+        epochs=int(hyperparams["epochs"]) if "epochs" in list(hyperparams.keys()) else 3
+        print(epochs)
+        # Receive other hyperparams maybe?
+    except:
+        epochs=2
 
     pruner = optuna.pruners.MedianPruner()
 

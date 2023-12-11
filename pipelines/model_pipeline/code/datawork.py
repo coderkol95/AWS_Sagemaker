@@ -17,7 +17,7 @@ class data_module(pl.LightningDataModule):
   
     def setup(self, stage=None):
 
-        self.X=np.loadtxt(os.path.join(self.folder,"X_preprocessed.csv"), dtype=np.float32, delimiter=',')
+        self.X=np.loadtxt(os.path.join(self.folder,"X.csv"), dtype=np.float32, delimiter=',')
         self.X=np.delete(self.X,0,1) # Deleting the first column as it was saved as a pd DataFrame
         self.y=np.loadtxt(os.path.join(self.folder,"y.csv"), dtype=np.float32, delimiter=',')
         self.dataset=TensorDataset(torch.from_numpy(self.X),torch.from_numpy(self.y))
