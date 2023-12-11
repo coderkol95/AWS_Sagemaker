@@ -1,4 +1,4 @@
 boto3==1.33.6
-pytorch-lightning==2.1.2
 torch==1.13.1
 optuna==3.5.0
+pytorch_lightning==1.8

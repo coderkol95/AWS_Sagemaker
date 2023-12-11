@@ -1,30 +1,31 @@
 import pytorch_lightning as pl
 import torch
-from torch.nn.functional import relu, mse_loss
+import torch.nn as nn
+import torch.nn.functional as F
 from torch.optim import Adam
 from datawork import data_module
 import argparse
 import os
 import optuna
-from optuna.integration import PyTorchLightningPruningCallback
+# from optuna.integration import PyTorchLightningPruningCallback # This is causing a lot of problems between packages lightning and pytorch-lightning. Removing it for now
+from typing import List
 
-# Pytorch 2 has problem with last linear layer having 1 cell. Hence reverted to prev version
-
+# Pytorch 2 has problem with last linear layer having 1 cell in arm arch. Hence reverted to prev version
+# Optuna does not work with pytorch lightning >=2.0, using 1.8
 EPOCHS=3
-
 
 # Important path for sagemaker
 prefix = '/' # opt/ml/
 
-input_path = os.path.join(prefix, 'input/')
-output_path = os.path.join(prefix, 'output/')
-model_path = os.path.join(prefix, 'model/')
+# input_path = os.path.join(prefix, 'input/')
+# output_path = os.path.join(prefix, 'output/')
+# model_path = os.path.join(prefix, 'model/')
 
-if not os.path.exists(output_path):
-    os.makedirs(output_path)
+# if not os.path.exists(output_path):
+#     os.makedirs(output_path)
 
-if not os.path.exists(model_path):
-    os.makedirs(model_path)
+# if not os.path.exists(model_path):
+#     os.makedirs(model_path)
 
 # Defining training channel
 # channel_name = 'training'
@@ -40,7 +41,7 @@ class NN(pl.LightningModule):
 
         super().__init__()
         self.lr=lr
-        self.loss=mse_loss
+        self.loss=F.mse_loss
 
         layers: List[nn.Module] = []
 
@@ -103,14 +104,12 @@ def objective(trial):
         # limit_val_batches=PERCENT_VALID_EXAMPLES,
         enable_checkpointing=False,
         max_epochs=EPOCHS,
-        accelerator="auto",
-        devices=1,
-        callbacks=[PyTorchLightningPruningCallback(trial, monitor="val_loss")],
-        default_root_dir=output_path
+        # callbacks=[PyTorchLightningPruningCallback(trial, monitor="val_loss")],
+        # default_root_dir=output_path
     )
     hyperparameters = dict(n_layers=n_layers, dropout=dropout, output_dims=output_dims, lr=lr)
     trainer.logger.log_hyperparams(hyperparameters)
-    trainer.fit(model, datamodule=data)
+    trainer.fit(model,data)
 
     return trainer.callback_metrics["val_loss"].item()
 
@@ -122,7 +121,7 @@ if __name__ =='__main__':
     pruner = optuna.pruners.MedianPruner()
 
     study = optuna.create_study(direction="minimize", pruner=pruner)
-    study.optimize(objective, n_trials=10, timeout=600)
+    study.optimize(objective, n_trials=3, timeout=600)
 
     print("Best trial:")
     trial = study.best_trial
