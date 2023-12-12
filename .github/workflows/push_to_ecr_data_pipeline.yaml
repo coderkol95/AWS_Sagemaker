@@ -6,7 +6,7 @@ on:
     paths:
         - pipelines/data_pipeline/*
 jobs:
-  build-and-push:
+  build-and-push-image:
     name: Build and Push to ECR
     runs-on: ubuntu-latest
     steps:
@@ -41,3 +41,47 @@ jobs:
         docker build --platform linux/amd64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
       working-directory: pipelines/data_pipeline
+
+  update-lambda:
+    needs: [build-and-push-image]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.PAT }}
+        repository: 'coderkol95/AWS_Sagemaker'
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.LAMBDA_UPDATE_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.LAMBDA_UPDATE_SECRET_KEY }}
+        aws-region: us-east-1
+    - name: Setup python 3.9
+      uses: actions/setup-python@v4
+      with: 
+        python-version: "3.9"
+    - name: Install python packages
+      run: |
+        python -m pip install --upgrade pip
+        pip install boto3
+    - name: Update lambda
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: data-pipeline
+        IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
+      run: python update_lambda.py --image $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      working-directory: pipelines/data_pipeline
+  
+  # preprocess-data:
+  #   needs: [update-lambda]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: configure AWS credentials
+  #     uses: aws-actions/configure-aws-credentials@v1
+  #     with:
+  #       aws-access-key-id: ${{ secrets.LAMBDA_UPDATE_ACCESS_KEY }}
+  #       aws-secret-access-key: ${{ secrets.LAMBDA_UPDATE_SECRET_KEY }}
+  #       aws-region: us-east-1
+  #   - name: Trigger preprocessing job
+  #     run: aws lambda invoke --function-name data-pipeline
