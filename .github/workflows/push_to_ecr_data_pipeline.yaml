@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
         - pipelines/data_pipeline/*
+        - .github/workflows/push_to_ecr_data_pipeline.yaml
 jobs:
   build-and-push-image:
     name: Build and Push to ECR
