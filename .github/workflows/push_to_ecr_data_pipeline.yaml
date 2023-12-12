@@ -73,15 +73,24 @@ jobs:
       run: python update_lambda.py
       working-directory: pipelines/data_pipeline
   
-  # preprocess-data:
-  #   needs: [update-lambda]
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - name: configure AWS credentials
-  #     uses: aws-actions/configure-aws-credentials@v1
-  #     with:
-  #       aws-access-key-id: ${{ secrets.LAMBDA_UPDATE_ACCESS_KEY }}
-  #       aws-secret-access-key: ${{ secrets.LAMBDA_UPDATE_SECRET_KEY }}
-  #       aws-region: us-east-1
-  #   - name: Trigger preprocessing job
-  #     run: aws lambda invoke --function-name data-pipeline
+  preprocess-data:
+    needs: [update-lambda]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.PAT }}
+        repository: 'coderkol95/AWS_Sagemaker'
+    - name: Setup python 3.9
+      uses: actions/setup-python@v4
+      with: 
+        python-version: "3.9"
+    - name: Install python packages
+      run: |
+        python -m pip install --upgrade pip
+        pip install boto3   
+    - name: Trigger preprocessing job
+      run: python upload_dummy_to_s3.py
+      working-directory: pipelines/data_pipeline
+  
