@@ -12,7 +12,6 @@ def update_lambda_fn(image_uri):
 
 if __name__=="__main__":
 
-    image=f"{os.environ['ECR_REGISTRY']}/{os.environ['ECR_REPOSITORY']}:{os.environ['IMAGE_TAG']}"
-
+    image=f"879444378775.dkr.ecr.us-east-1.amazonaws.com/data-pipeline:{os.environ['IMAGE_TAG']}"
     update_lambda_fn(image)
 
