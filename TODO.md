@@ -18,9 +18,9 @@
 - [X] Consistent data generation in data module
 - [X] Deterministic run of each trial for ensuring reproducibility - this prevents saving a lot of models and spiking up the S3 cost
 - [X] Downloading data into training module directly from S3
-- [ ] Experiment results tracking and model results visualization
-- [ ] Saving experiment results to S3
-- [ ] Generating different Optuna hyperparameter runs as experiment runs?
+- [X] Experiment results tracking and model results visualization - Tensorboard results saved to S3. Can be downloaded and visualized in Tensorboard.
+- [X] Saving experiment results to S3
+- [X] Generating different Optuna hyperparameter runs as experiment runs? - Not monitoring runs in Sagemaker. Different runs appear as versions, which are visualized in Tensorboard.
 
 ## Post training activities: Deployment and further
 - [ ] Performance review among models
@@ -46,8 +46,9 @@ The pipelines are decoupled. This decoupling controls changes in one pipeline fr
 
 `Trigger: File upload in S3 bucket in processing/`  -  Not implemented currently.
 
-* Training is done through containers in Sagemaker using Optuna?
-* Experiments are tracked in Sagemaker
+* Training is done through containers in Sagemaker using Optuna
+* Different Optuna runs are saved in lightning logs along with best trial params in S3
+* These logs are downlaoded and visualized in Tensorboard locally
 
 ## Deployment
 

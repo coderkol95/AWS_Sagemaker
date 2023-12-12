@@ -60,6 +60,9 @@ class NN(pl.LightningModule):
         # If logits were returned, you would have returned the F.softmax etc. 
         return self.layers(data)
     
+    def on_train_start(self):
+        self.logger.log_hyperparams(self.hparams, {"lr": self.lr, "dropout": self.dropout})
+
     def training_step(self, train_batch, batch_idx):
         x, y = train_batch 
         preds = self.forward(x)
@@ -72,13 +75,6 @@ class NN(pl.LightningModule):
         preds = self.forward(x) 
         loss = self.loss(preds, y)
         self.log("val_loss", loss, on_step=False, on_epoch=True)
-        return loss
-
-    def test_step(self, test_batch, batch_idx): 
-        x, y = test_batch 
-        logits = self.forward(x) 
-        loss = self.loss(logits, y)
-        self.log("test_loss", loss, on_step=False, on_epoch=True)
         return loss
 
     def on_train_epoch_end(self):
@@ -140,7 +136,7 @@ if __name__ =='__main__':
     pruner = optuna.pruners.MedianPruner()
 
     study = optuna.create_study(direction="minimize", pruner=pruner)
-    study.optimize(objective, n_trials=3, timeout=600)
+    study.optimize(objective, n_trials=2, timeout=300)
 
     print("Best trial:")
     trial = study.best_trial
@@ -150,6 +146,8 @@ if __name__ =='__main__':
     print("  Best model's parameters: ")
     for key, value in trial.params.items():
         print(f"    {key}: {value}")
+
+    json.dump(trial.params,open('opt/ml/output/data/best_trial_params.json','w'))
 
 # Not saving every model. It will take up a lot of space, resulting in a lot of unnecessary cost. 
 # Instead enforcing seed and deterministic run of Trainer 
