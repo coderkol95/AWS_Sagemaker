@@ -1,26 +1,27 @@
 import lightning.pytorch as pl
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.optim import Adam
 from datawork import data_module
-import argparse
 import os
 import optuna
 # from optuna.integration import PyTorchLightningPruningCallback # This is causing a lot of problems between packages lightning and pytorch-lightning. Removing it for now
 from typing import List
 import json
+import argparse
+
+# When executing locally: python code/train.py --local True
 
 # Pytorch 2 has problem with last linear layer having 1 cell in arm arch. Hence reverted to prev version
 # Optuna does not work with pytorch lightning >=2.0, using 1.8
-EPOCHS=3
-RANDOM_SEED=42
+EPOCHS:int=0
+RANDOM_SEED:int=42
 
 # Important path for sagemaker
 prefix = 'opt/ml/'
 
 input_path = os.path.join(prefix, 'input/data/training')
-output_path = os.path.join(prefix, 'output/lightning_logs')
+output_path = os.path.join(prefix, 'output/data')
 model_path = os.path.join(prefix, 'model')
 hyperparam_path = os.path.join(prefix, 'input/config/hyperparameters.json')
 
@@ -35,14 +36,16 @@ class NN(pl.LightningModule):
         super().__init__()
         self.lr=lr
         self.loss=F.mse_loss
+        self.output_dims=output_dims
+        self.dropout=dropout
 
         layers: List[nn.Module] = []
 
         input_dim: int = 5
-        for output_dim in output_dims:
+        for output_dim in self.output_dims:
             layers.append(nn.Linear(input_dim, output_dim))
             layers.append(nn.ReLU())
-            layers.append(nn.Dropout(dropout))
+            layers.append(nn.Dropout(self.dropout))
             input_dim = output_dim
 
         layers.append(nn.Linear(input_dim, 1)) # Here would have been CLASSES
@@ -78,6 +81,9 @@ class NN(pl.LightningModule):
         self.log("test_loss", loss, on_step=False, on_epoch=True)
         return loss
 
+    def on_train_epoch_end(self):
+        self.log_dict({"dropout":self.dropout,"lr":self.lr}) #,"output_dims":str(self.output_dims)})
+
 def objective(trial):
 
     # We optimize the number of layers, hidden units in each layer, dropout and the learning rate.
@@ -89,9 +95,12 @@ def objective(trial):
         trial.suggest_int(f"n_units_l{i}", 4, 128, log=True) for i in range(n_layers)
     ]
 
+    od="_".join(str(x) for x in output_dims)
+
+    # version = f"version_{round(dropout,2)}_{round(lr,2)}_{od}"
+
     pl.seed_everything(RANDOM_SEED, workers=True) # Setting seed for execution
     model = NN(dropout, output_dims,lr)
-    data=data_module()
 
     trainer = pl.Trainer(
         logger=True,
@@ -113,11 +122,20 @@ if __name__ =='__main__':
     try:
         # Hyperparameters received when run as Sagemaker image
         hyperparams = json.load(open(hyperparam_path))        
-        epochs=int(hyperparams["epochs"]) if "epochs" in list(hyperparams.keys()) else 3
-        print(epochs)
+        EPOCHS=int(hyperparams["epochs"]) if "epochs" in list(hyperparams.keys()) else 3
         # Receive other hyperparams maybe?
     except:
-        epochs=2
+        EPOCHS=2
+
+    a = argparse.ArgumentParser()
+    a.add_argument("--local",default=False, type=bool, required=False)
+
+    parsed_args=a.parse_args()
+
+    if parsed_args.local:
+        data=data_module(folder="opt/ml/input/data/backup/")
+    else:
+        data=data_module()
 
     pruner = optuna.pruners.MedianPruner()
 
