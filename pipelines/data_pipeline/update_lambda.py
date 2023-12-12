@@ -1,5 +1,5 @@
 import boto3
-import argparse
+import os
 
 def update_lambda_fn(image_uri):
 
@@ -12,8 +12,7 @@ def update_lambda_fn(image_uri):
 
 if __name__=="__main__":
 
-    parser=argparse.ArgumentParser()
-    parser.add_argument("--image",required=True,type=str)
-    image=parser.parse_args()
+    image=f"{os.environ['ECR_REGISTRY']}/{os.environ['ECR_REPOSITORY']}:{os.environ['IMAGE_TAG']}"
+
     update_lambda_fn(image)
 

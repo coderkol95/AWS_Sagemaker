@@ -9,7 +9,7 @@
 - [X] Fetching the latest code for data preparation - Container gets automatically updated
 - [X] Automatic data preparation whenever new data is uploaded - Triggered via Lambda function
 - [X] Upload data transformed datasets to S3
-- [ ] Check if Lambda function image URI can be automatically updated when the ECR image is updated
+- [ ] Update Lambda function image URI automatically when the ECR image is updated
 - [ ] Run Lambda using its URL when the ECR image is updated
 
 ## Training

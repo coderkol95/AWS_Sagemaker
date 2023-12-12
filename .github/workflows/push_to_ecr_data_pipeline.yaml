@@ -70,7 +70,7 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: data-pipeline
         IMAGE_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
-      run: python update_lambda.py --image $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      run: python update_lambda.py
       working-directory: pipelines/data_pipeline
   
   # preprocess-data:
