@@ -1,5 +1,8 @@
 import boto3
 import os
+import json
+config=json.load(open("../../.keys.json"))
+AWS_ACC_ID = config["AWS_ACC_ID"] # Not tested
 
 def update_lambda_fn(image_uri):
 
@@ -12,6 +15,6 @@ def update_lambda_fn(image_uri):
 
 if __name__=="__main__":
 
-    image=f"879444378775.dkr.ecr.us-east-1.amazonaws.com/data-pipeline:{os.environ['IMAGE_TAG']}"
+    image=f"{AWS_ACC_ID}.dkr.ecr.us-east-1.amazonaws.com/data-pipeline:{os.environ['IMAGE_TAG']}"
     update_lambda_fn(image)
 
