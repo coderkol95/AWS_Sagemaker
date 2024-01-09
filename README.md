@@ -19,7 +19,6 @@ Data arrives at a frequency or ad-hoc. Data transformation scripts are adjusted 
 * Any change in these scripts trigger new image upload to ECR and subsequently to Lambda
 * Transformed data with data transformation objects are kept in S3
 * Versioning of data done in S3
-![Alt text](image-1.png)
 
 # Model pipeline
 
@@ -29,4 +28,3 @@ Data arrives at a frequency or ad-hoc. Data transformation scripts are adjusted 
 * No need to save model as runs are deterministic and results are reproducible - saves S3 costs
 * Model run results stored in S3 for analysis in Tensorboard locally
 
-![Alt text](image.png)
