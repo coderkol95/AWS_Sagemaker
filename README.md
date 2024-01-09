@@ -9,6 +9,8 @@ Data arrives at a frequency or ad-hoc. Data transformation scripts are adjusted 
 * No need to step out of VS code environment for data engineers and data scientists
 * Guides on required IAM roles, users and other administrative tasks
 * Automated model hyperparameter tuning to get best hyperparameters
+* Containerised data transformation and model training code guarantees portability and repeatability
+* No requirement of provisioning and managing compute
 
 # Data pipeline
 
@@ -16,6 +18,8 @@ Data arrives at a frequency or ad-hoc. Data transformation scripts are adjusted 
 * Data transformation is done via Docker image in Lambda
 * Any change in these scripts trigger new image upload to ECR and subsequently to Lambda
 * Transformed data with data transformation objects are kept in S3
+* Versioning of data done in S3
+![Alt text](image-1.png)
 
 # Model pipeline
 
@@ -24,3 +28,5 @@ Data arrives at a frequency or ad-hoc. Data transformation scripts are adjusted 
 * Best model hyperparameters saved as a separate file
 * No need to save model as runs are deterministic and results are reproducible - saves S3 costs
 * Model run results stored in S3 for analysis in Tensorboard locally
+
+![Alt text](image.png)
