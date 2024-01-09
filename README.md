@@ -2,7 +2,7 @@
 
 MLOps implementation on AWS for a product team. Implements the following scenario:
 
-`Data arrives at a frequency or ad-hoc. Data transformation scripts are adjusted and updated automatically via docker image on Lambda. Data is transformed and kept in S3 on arrival via Lambda. Model traning is triggered when new data is available by updating few parameters. Best model hyperparameters are automatically selected using Optuna along with all model training runs. This model can then be deployed as required.`
+Data arrives at a frequency or ad-hoc. Data transformation scripts are adjusted and updated automatically via docker image on Lambda. Data is transformed and kept in S3 on arrival via Lambda. Model traning is triggered when new data is available by updating few parameters. Best model hyperparameters are automatically selected using Optuna along with all model training runs. This model can then be deployed as required.
 
 # Highlights
 
