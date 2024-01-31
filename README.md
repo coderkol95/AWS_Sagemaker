@@ -20,6 +20,8 @@ Data arrives at a frequency or ad-hoc. Data transformation scripts are adjusted 
 * Transformed data with data transformation objects are kept in S3
 * Versioning of data done in S3
 
+![Data pipeline](image-2.png)
+
 # Model pipeline
 
 * Different modular model architectures can be created via docker images
@@ -28,3 +30,4 @@ Data arrives at a frequency or ad-hoc. Data transformation scripts are adjusted 
 * No need to save model as runs are deterministic and results are reproducible - saves S3 costs
 * Model run results stored in S3 for analysis in Tensorboard locally
 
+![Model pipeline](image-3.png)

@@ -4,3 +4,4 @@ sagemaker
 awscli
 lightning=2.1.2
 torch-tb-profiler==0.4.3
+optuna==3.5.0
